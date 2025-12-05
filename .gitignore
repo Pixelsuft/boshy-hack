@@ -1,0 +1,9 @@
+__idea__
+.vs
+.vscode
+boshy-hack
+Debug
+Release
+x64
+*.exe
+*.dll
