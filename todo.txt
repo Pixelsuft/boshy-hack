@@ -1,1 +1,1 @@
-disable keyboard when menu
+emulate mouse clicks with keyboard (how?)
