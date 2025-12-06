@@ -30,6 +30,16 @@ static long __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS* 
 	return result;
 }
 
+static WNDPROC oWndProc = NULL;
+LRESULT CALLBACK hkWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam,
+                              _In_ LPARAM lParam) {
+    if ((uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONUP) && 0) {
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	}
+    return ::CallWindowProcA(oWndProc, hwnd, uMsg, wParam, lParam);
+}
+
+
 static long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 {
 	static bool init = false;
@@ -45,6 +55,7 @@ static long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		ImGui_ImplWin32_Init(hwnd);
 		ImGui_ImplDX9_Init(pDevice);
+        // oWndProc = (WNDPROC)::SetWindowLongPtr((HWND)hwnd, GWLP_WNDPROC, (LONG)hkWindowProc);
 		init = true;
 	}
 

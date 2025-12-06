@@ -8,5 +8,7 @@ extern int new_rng_seed;
 extern bool new_rng_custom;
 extern int new_rng;
 extern bool god_mode;
+extern bool no_trans;
+extern bool no_viewport;
 
 void ui_render();

@@ -11,6 +11,8 @@ int new_rng_seed = 0;
 bool new_rng_custom = false;
 bool god_mode = false;
 int new_rng = 0;
+bool no_trans = false;
+bool no_viewport = false;
 
 void ui_render() {
 	static LARGE_INTEGER last_tick = { .QuadPart = 0 };
@@ -38,13 +40,15 @@ void ui_render() {
 		}
 		*/
 		ImGui::Checkbox("Force static value for new RNG (Ganon, Warcraft...)", &new_rng_custom);
-		if (ImGui::InputInt("Value#NewRngValue", &new_rng)) {
+		if (ImGui::InputInt("Value##NewRngValue", &new_rng)) {
 			if (new_rng < 0)
 				new_rng = 0;
 			else if (new_rng > RAND_MAX)
 				new_rng = RAND_MAX;
-		}
-		ImGui::Checkbox("God Mode (laggy)", &god_mode);
+        }
+        ImGui::Checkbox("God Mode (laggy)", &god_mode);
+        ImGui::Checkbox("No Scene Transitions", &no_trans);
+        ImGui::Checkbox("Disable viewport (No screen image manipulation)", &no_viewport);
 	}
 	ImGui::End();
 }

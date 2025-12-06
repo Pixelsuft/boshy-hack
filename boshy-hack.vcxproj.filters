@@ -78,6 +78,9 @@
     <ClCompile Include="rng.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ren.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ui.hpp">
@@ -96,6 +99,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rng.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ren.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

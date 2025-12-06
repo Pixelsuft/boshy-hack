@@ -4,6 +4,7 @@ __idea__
 boshy-hack
 Debug
 Release
+RelNoOpt
 x64
 *.exe
 *.dll
