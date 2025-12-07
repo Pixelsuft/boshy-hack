@@ -30,12 +30,9 @@ static long __stdcall hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS* 
 	return result;
 }
 
-static WNDPROC oWndProc = NULL;
+WNDPROC oWndProc = NULL;
 LRESULT CALLBACK hkWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam,
                               _In_ LPARAM lParam) {
-    if ((uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONUP) && 0) {
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-	}
     return ::CallWindowProcA(oWndProc, hwnd, uMsg, wParam, lParam);
 }
 
@@ -81,7 +78,7 @@ static void impl_d3d9_init()
 
 static int MyThread()
 {
-#if defined(_DEBUG) || 1
+#if defined(_DEBUG)
 	AllocConsole();
 	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 	freopen_s((FILE**)stdin, "CONIN$", "r", stdin);

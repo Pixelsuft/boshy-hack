@@ -14,6 +14,7 @@ extern HWND hwnd;
 
 static int need_mouse = 0;
 
+extern WNDPROC oWndProc;
 static BOOL(__stdcall* PeekMessageAOrig)(
 	LPMSG lpMsg,
 	HWND  hWnd,
@@ -26,9 +27,8 @@ static BOOL __stdcall PeekMessageAHook(
 	HWND  hWnd,
 	UINT  wMsgFilterMin,
 	UINT  wMsgFilterMax,
-	UINT  wRemoveMsg
-) {
-    if (need_mouse > 0) {
+	UINT  wRemoveMsg) {
+    if (need_mouse > 0 && 0) {
         if (1) {
             cout << "mouse event" << need_mouse << "\n";
 			*lpMsg = {0};
@@ -42,7 +42,7 @@ static BOOL __stdcall PeekMessageAHook(
         DispatchMessageA(lpMsg);
         return TRUE;
 	}
-	BOOL ret = PeekMessageAOrig(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+    BOOL ret = PeekMessageAOrig(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
 	if (ret) {
 		// Fuck you, MMF2!
             if (lpMsg->message == WM_MOUSEMOVE || lpMsg->message == WM_LBUTTONDOWN ||
@@ -57,7 +57,7 @@ static BOOL __stdcall PeekMessageAHook(
 				should_peak = false;
 				// hkWindowProc(hwnd, lpMsg->message, lpMsg->wParam, lpMsg->lParam);
 				TranslateMessage(lpMsg);
-				DispatchMessageA(lpMsg);
+                DispatchMessageA(lpMsg);
 				ImGui_ImplWin32_WndProcHandler(hwnd, lpMsg->message, lpMsg->wParam, lpMsg->lParam);
 				//cout << "WTF";
 			}
@@ -76,19 +76,26 @@ static BOOL __stdcall PeekMessageAHook(
 				if (lpMsg->message == WM_KEYDOWN && (last_key == VK_INSERT || last_key == VK_TAB)) {
 					// cout << "SHOW/HIDE! \n";
 					win_shown = !win_shown;
-                } else if (last_key == 'T') {
+                } else if (last_key == 'T' && 0) {
                     need_mouse = lpMsg->message == WM_KEYDOWN ? 1 : 2;
                     // cout << "mouse event created" << need_mouse << "\n";
 				}
 			}
 		}
 	}
-    if (lpMsg->message == WM_LBUTTONDOWN || lpMsg->message == WM_LBUTTONUP) {
+    if ((lpMsg->message == WM_LBUTTONDOWN || lpMsg->message == WM_LBUTTONUP) && 0) {
         lpMsg->wParam = 0;
         lpMsg->lParam = 0;
         // cout << "real mouse\n";
 	}
 	return ret || need_mouse > 0;
+}
+
+static BOOL(__stdcall *GetMessageAOrig)(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax) = nullptr;
+static BOOL __stdcall GetMessageAHook(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin,
+                                      UINT wMsgFilterMax) {
+    auto ret = GetMessageAOrig(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+	return ret;
 }
 
 static int(__stdcall* MessageBoxAOrig)(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType) = nullptr;
@@ -101,7 +108,7 @@ static int __stdcall MessageBoxAHook(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption,
 int (__cdecl *_stricmpOrig)(const char* s1, const char* s2) = nullptr;
 int __cdecl _stricmpHook(const char* s1, const char* s2) {
 	// cout << "timeHook " << s1 << " " << s2 << " " << ret << "\n";
-    if (god_mode && strcmp(s2, "Die") == 0)
+    if (god_mode && (strcmp(s2, "Die") == 0 || strcmp(s2, "die") == 0))
         return 1;
     auto ret = _stricmpOrig(s1, s2);
 	return ret;
@@ -109,7 +116,8 @@ int __cdecl _stricmpHook(const char* s1, const char* s2) {
 
 void init_msg() {
     cout << "base: " << get_base() << "\n";
-	hook(get_ptr("PeekMessageA", "user32.dll"), PeekMessageAHook, &PeekMessageAOrig);
+    hook(get_ptr("PeekMessageA", "user32.dll"), PeekMessageAHook, &PeekMessageAOrig);
+    // hook(get_ptr("GetMessageA", "user32.dll"), GetMessageAHook, &GetMessageAOrig);
 	hook(get_ptr("MessageBoxA", "user32.dll"), MessageBoxAHook, &MessageBoxAOrig);
 	// hook(get_base("clickteam-movement-controller.mfx") + 0x11ca, FUN1_Hook, &FUN1_Orig);
 	hook(get_ptr("_stricmp", "msvcrt.dll"), _stricmpHook, &_stricmpOrig);

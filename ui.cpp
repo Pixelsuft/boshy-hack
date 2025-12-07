@@ -13,6 +13,7 @@ bool god_mode = false;
 int new_rng = 0;
 bool no_trans = false;
 bool no_viewport = false;
+int ppos[2] = {0, 0};
 
 void ui_render() {
 	static LARGE_INTEGER last_tick = { .QuadPart = 0 };
@@ -26,8 +27,9 @@ void ui_render() {
 	if (!win_shown)
 		return;
 	if (ImGui::Begin("Boshy Hack")) {
-		ImGui::Text("Boshy hack by Pixelsuft");
-		ImGui::Text("Real FPS: %i", (int)(dt <= 0.00001 ? 10000 : (int)(1.0 / dt)));
+        ImGui::Text("Boshy hack by Pixelsuft");
+        ImGui::Text("Real FPS: %i", (int)(dt <= 0.00001 ? 10000 : (int)(1.0 / dt)));
+        ImGui::Text("Player position (Doesn't work): (%i, %i)", ppos[0], ppos[1]);
 		ImGui::Checkbox("No cursor move/kill", &no_cursor_kill);
 		ImGui::Checkbox("Skip message boxes", &skip_msg_box);
 		/*
@@ -46,7 +48,7 @@ void ui_render() {
 			else if (new_rng > RAND_MAX)
 				new_rng = RAND_MAX;
         }
-        ImGui::Checkbox("God Mode (laggy)", &god_mode);
+        ImGui::Checkbox("God Mode", &god_mode);
         ImGui::Checkbox("No Scene Transitions", &no_trans);
         ImGui::Checkbox("Disable viewport (No screen image manipulation)", &no_viewport);
 	}

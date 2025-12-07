@@ -10,5 +10,6 @@ extern int new_rng;
 extern bool god_mode;
 extern bool no_trans;
 extern bool no_viewport;
+extern int ppos[2];
 
 void ui_render();
