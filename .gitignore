@@ -3,6 +3,7 @@ __idea__
 .vscode
 boshy-hack
 Debug
+DebugForRel
 Release
 RelNoOpt
 x64
